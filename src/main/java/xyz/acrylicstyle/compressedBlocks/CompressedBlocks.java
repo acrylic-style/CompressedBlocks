@@ -255,6 +255,14 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
         removeRecipe(compressed_sand_6);
         removeRecipe(compressed_sand_7);
         removeRecipe(compressed_sand_8);
+        removeRecipe(uncompressed_sand_1);
+        removeRecipe(uncompressed_sand_2);
+        removeRecipe(uncompressed_sand_3);
+        removeRecipe(uncompressed_sand_4);
+        removeRecipe(uncompressed_sand_5);
+        removeRecipe(uncompressed_sand_6);
+        removeRecipe(uncompressed_sand_7);
+        removeRecipe(uncompressed_sand_8);
     }
 
     public static void setIngredient(ShapedRecipe recipe, Material material) {
