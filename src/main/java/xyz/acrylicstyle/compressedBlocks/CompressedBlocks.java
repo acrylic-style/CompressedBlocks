@@ -25,6 +25,8 @@ import static org.bukkit.Bukkit.removeRecipe;
 public class CompressedBlocks extends JavaPlugin implements Listener {
     public static CompressedBlocks instance = null;
 
+    public static NamespacedKey diamond_plate = null;
+
     public static NamespacedKey compressed_redstone_block = null;
     public static NamespacedKey compressed_lapis_block = null;
     public static NamespacedKey compressed_iron_block = null;
@@ -67,6 +69,7 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(this, this);
+        diamond_plate = new NamespacedKey(this, "diamond_plate");
         compressed_redstone_block = new NamespacedKey(this, "compressed_redstone_block");
         compressed_lapis_block = new NamespacedKey(this, "compressed_lapis_block");
         compressed_iron_block = new NamespacedKey(this, "compressed_iron_block");
@@ -118,6 +121,11 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
         ItemStack ei = getItemStack(Material.EMERALD_BLOCK, "圧縮されたエメラルドブロック");
         ShapedRecipe er = new ShapedRecipe(compressed_emerald_block, ei);
         setIngredient(er, Material.EMERALD_BLOCK);
+        // diamond plate
+        ItemStack dpi = getItemStack(Material.SADDLE, ChatColor.WHITE + "Diamond Plate");
+        ShapedRecipe dpr = new ShapedRecipe(diamond_plate, dpi);
+        dpr.shape("DD");
+        dpr.setIngredient('D', di);
         // compressed sand
         ItemStack s1i = getItemStack(Material.SAND, "1倍圧縮された砂ブロック");
         ShapedRecipe s1 = new ShapedRecipe(compressed_sand_1, s1i);
@@ -189,6 +197,7 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
         setIngredient(udr, di);
         ShapelessRecipe uer = new ShapelessRecipe(uncompressed_emerald_block, new ItemStack(Material.EMERALD_BLOCK, 9));
         setIngredient(uer, ei);
+        addRecipe(dpr);
         addRecipe(s1);
         addRecipe(s2);
         addRecipe(s3);
@@ -223,6 +232,7 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
+        removeRecipe(diamond_plate);
         removeRecipe(compressed_redstone_block);
         removeRecipe(compressed_lapis_block);
         removeRecipe(compressed_iron_block);
