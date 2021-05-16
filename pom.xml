@@ -51,20 +51,14 @@
     <repositories>
         <repository>
             <id>acrylic-repo</id>
-            <url>https://repo.acrylicstyle.xyz/</url>
+            <url>https://repo2.acrylicstyle.xyz/</url>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>xyz.acrylicstyle</groupId>
-            <artifactId>api</artifactId>
-            <version>0.4.20</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

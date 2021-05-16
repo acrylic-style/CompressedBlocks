@@ -1,6 +1,4 @@
 name: CompressedBlocks
 main: xyz.acrylicstyle.compressedBlocks.CompressedBlocks
 version: "1.0"
-api-version: "1.15"
-depend:
-  - TomeitoLib
+api-version: "1.16"

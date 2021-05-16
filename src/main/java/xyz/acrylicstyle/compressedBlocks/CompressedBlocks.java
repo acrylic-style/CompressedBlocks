@@ -1,23 +1,20 @@
 package xyz.acrylicstyle.compressedBlocks;
 
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.RecipeChoice;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import xyz.acrylicstyle.paper.Paper;
-import xyz.acrylicstyle.paper.inventory.ItemStackUtils;
-import xyz.acrylicstyle.paper.nbt.NBTTagCompound;
-import xyz.acrylicstyle.tomeito_api.gui.ClickableItem;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 import static org.bukkit.Bukkit.addRecipe;
 import static org.bukkit.Bukkit.removeRecipe;
@@ -121,11 +118,6 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
         ItemStack ei = getItemStack(Material.EMERALD_BLOCK, "圧縮されたエメラルドブロック");
         ShapedRecipe er = new ShapedRecipe(compressed_emerald_block, ei);
         setIngredient(er, Material.EMERALD_BLOCK);
-        // diamond plate
-        ItemStack dpi = getItemStack(Material.SADDLE, ChatColor.WHITE + "Diamond Plate");
-        ShapedRecipe dpr = new ShapedRecipe(diamond_plate, dpi);
-        dpr.shape("DD");
-        dpr.setIngredient('D', di);
         // compressed sand
         ItemStack s1i = getItemStack(Material.SAND, "1倍圧縮された砂ブロック");
         ShapedRecipe s1 = new ShapedRecipe(compressed_sand_1, s1i);
@@ -197,7 +189,6 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
         setIngredient(udr, di);
         ShapelessRecipe uer = new ShapelessRecipe(uncompressed_emerald_block, new ItemStack(Material.EMERALD_BLOCK, 9));
         setIngredient(uer, ei);
-        addRecipe(dpr);
         addRecipe(s1);
         addRecipe(s2);
         addRecipe(s3);
@@ -267,31 +258,36 @@ public class CompressedBlocks extends JavaPlugin implements Listener {
 
     public static void setIngredient(ShapedRecipe recipe, Material material) {
         recipe.shape("XXX", "XXX", "XXX");
-        recipe.setIngredient('X', new ItemStack(material));
+        recipe.setIngredient('X', new RecipeChoice.ExactChoice(new ItemStack(material)));
     }
 
     public static void setIngredient(ShapedRecipe recipe, ItemStack itemStack) {
         recipe.shape("XXX", "XXX", "XXX");
-        recipe.setIngredient('X', itemStack);
+        recipe.setIngredient('X', new RecipeChoice.ExactChoice(itemStack));
     }
 
     public static void setIngredient(ShapelessRecipe recipe, ItemStack item) {
-        recipe.addIngredient(item);
+        recipe.addIngredient(new RecipeChoice.ExactChoice(item));
     }
 
     public static boolean isCompressed(ItemStack item) {
-        ItemStackUtils util = Paper.itemStack(item);
-        NBTTagCompound tag = util.hasTag() ? Objects.requireNonNull(util.getTag(), "tag cannot be null") : util.getOrCreateTag();
+        net.minecraft.server.v1_16_R3.ItemStack i = CraftItemStack.asNMSCopy(item);
+        NBTTagCompound tag = i.getOrCreateTag();
         return tag.hasKey("compressed") && tag.getBoolean("compressed");
     }
 
     public static ItemStack getItemStack(Material material, String displayName) {
-        ItemStack item = ClickableItem.of(material, 1, ChatColor.YELLOW + displayName, new ArrayList<>(), e -> {}).getItemStack();
-        ItemStackUtils util = Paper.itemStack(item);
-        NBTTagCompound tag = util.getOrCreateTag();
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(ChatColor.YELLOW + displayName);
+            item.setItemMeta(meta);
+        }
+        net.minecraft.server.v1_16_R3.ItemStack i = CraftItemStack.asNMSCopy(item);
+        NBTTagCompound tag = i.getOrCreateTag();
         tag.setBoolean("compressed", true);
-        util.setTag(tag);
-        return util.getItemStack();
+        i.setTag(tag);
+        return CraftItemStack.asBukkitCopy(i);
     }
 
     @EventHandler
